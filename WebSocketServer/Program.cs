@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using WebSocketServer;
+using WebSocketServer.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,14 +33,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/SendMessageThroughWebSocket", async ([FromServices] IWebSocketPool webSocketPool) =>
+app.MapPost("/SendMessage/{clientId}", async ([FromRoute] Guid clientId, [FromBody] Message message, [FromServices] IWebSocketPool webSocketPool) =>
 {
-    var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-    await webSocketPool.SendAsync(Guid.Empty, $"Message from server: {timestamp}");
-
-    return timestamp;
+    await webSocketPool.SendAsync(clientId, JsonSerializer.Serialize(message));
 })
-.WithName("SendMessageThroughWebSocket")
+.WithName("SendMessage")
 .WithOpenApi();
 
 app.Run();
