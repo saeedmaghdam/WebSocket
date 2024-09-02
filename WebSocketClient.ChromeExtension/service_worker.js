@@ -159,9 +159,15 @@ class WebSocketClient {
 
   sendMessages() {
     if (this.socket.readyState === WebSocket.OPEN) {
-      const message = `Message from client ${
+      const content = `Message from client ${
         this.clientId
       } at ${new Date().toISOString()}`;
+
+      const message = JSON.stringify({
+        refId: "00000000-0000-0000-0002-000000000001",
+        content: content
+      });
+
       if (this.logging) console.log(`Sending: ${message}`);
       this.socket.send(message);
     }
@@ -216,7 +222,7 @@ class WebSocketClient {
 // Example usage
 const webSocketClient = new WebSocketClient(
   "wss://localhost:7199",
-  "00000000-0000-0000-0000-000000000000"
+  "00000000-0000-0000-0001-000000000001"
 );
 
 webSocketClient.setOnConnectionEstablished(() => {

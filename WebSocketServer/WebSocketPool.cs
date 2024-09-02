@@ -102,14 +102,26 @@ namespace WebSocketServer
             {
                 while (webSocket.State == WebSocketState.Open)
                 {
-                    var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                    var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    try
+                    {
+                        var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                        var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                    if (_loggingEnabled) _logger.LogInformation("Received message from client {clientId}.", clientId);
-                    Received?.Invoke(this, new(clientId, message));
+                        if (_loggingEnabled) _logger.LogInformation("Received message from client {clientId}.", clientId);
+                        Received?.Invoke(this, new(clientId, message));
 
-                    if (result.MessageType == WebSocketMessageType.Close)
+                        if (result.MessageType == WebSocketMessageType.Close)
+                            break;
+                    }
+                    catch (WebSocketException ex) when (ex.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
+                    {
+                        if (_loggingEnabled) _logger.LogWarning("Client {clientId} disconnected prematurely.", clientId);
                         break;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_loggingEnabled) _logger.LogError(ex, "Error while receiving message from client {clientId}.", clientId);
+                    }
                 }
             }
             catch (Exception ex)
