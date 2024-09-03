@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -8,6 +7,13 @@ using WebSocketServer.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables()
+    .Build();
+
+builder.Configuration.AddConfiguration(configuration);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -18,13 +24,13 @@ builder.Services.AddSingleton<IWebSocketPool, WebSocketPool>();
 
 var app = builder.Build();
 
-_ = bool.TryParse(app.Configuration["RabbitMQ:Enabled"], out bool isRabbitMqEnabled);
-var exchangeName = app.Configuration["RabbitMQ:ExchangeName"];
+_ = bool.TryParse(app.Configuration["RABBITMQ:ENABLED"], out bool isRabbitMqEnabled);
+var exchangeName = app.Configuration["RABBITMQ:EXCHANGENAME"];
 var channel = default(IModel);
 
 if (isRabbitMqEnabled)
 {
-    var factory = new ConnectionFactory { Uri = new Uri(app.Configuration["ConnectionStrings:RabbitMQ"]!) };
+    var factory = new ConnectionFactory { Uri = new Uri(app.Configuration["CONNECTIONSTRINGS:RABBITMQ"]!) };
     var connection = factory.CreateConnection();
     channel = connection.CreateModel();
 }
