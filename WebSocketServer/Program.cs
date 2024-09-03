@@ -33,6 +33,8 @@ if (isRabbitMqEnabled)
     var factory = new ConnectionFactory { Uri = new Uri(app.Configuration["CONNECTIONSTRINGS:RABBITMQ"]!) };
     var connection = factory.CreateConnection();
     channel = connection.CreateModel();
+
+    channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Direct);
 }
 
 var webSocketPool = app.Services.GetRequiredService<IWebSocketPool>();
