@@ -136,7 +136,8 @@ namespace WebSocketServer
 
         private async Task CloseConnectionAsync(WebSocket webSocket, Guid clientId, Action? callback = default)
         {
-            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+            if (webSocket.State == WebSocketState.Open)
+                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
             _ = _clients.TryRemove(clientId, out _);
 
             if (_loggingEnabled) _logger.LogInformation("Client {clientId} disconnected.", clientId);

@@ -8,6 +8,8 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
     nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
     nginx.ingress.kubernetes.io/large-client-header-buffers: "4 16k"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "2592000"  # 30 days
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "2592000"  # 30 days
 spec:
   ingressClassName: nginx
   tls:

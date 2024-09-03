@@ -58,7 +58,11 @@ webSocketPool.Received += (sender, e) =>
 webSocketPool.ConnectionAlreadyExist += (sender, e) => app.Logger.LogInformation("EventHandler: Failed to add client {clientId}.", e.ClientId);
 webSocketPool.Shutdown += (sender, e) => app.Logger.LogInformation(!e.ClientId.HasValue ? "EventHandler: Server shutdown." : "EventHandler: Client {clientId} shutdown.", e.ClientId);
 
-app.UseWebSockets();
+app.UseWebSockets(new WebSocketOptions
+{
+    KeepAliveInterval = Timeout.InfiniteTimeSpan,
+    ReceiveBufferSize = 4 * 1024
+});
 app.UseMiddleware<WebSocketMiddleware>();
 
 // Configure the HTTP request pipeline.
