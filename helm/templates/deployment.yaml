@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: websocketserver
-        image: "registry.kub.lab/public/websocketserver:latest"
+        image: "registry.kub.lab/public/websocketserver:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
