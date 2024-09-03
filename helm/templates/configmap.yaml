@@ -14,8 +14,8 @@ data:
         }
       },
       "AllowedHosts": "*",
-      "RabbitMQ": {
-        "Enabled": true,
-        "ExchangeName": "websocketserver"
+      "RABBITMQ": {
+        "ENABLED": true,
+        "EXCHANGENAME": "websocketserver"
       }
     }
