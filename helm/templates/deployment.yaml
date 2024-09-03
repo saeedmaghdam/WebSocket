@@ -1,0 +1,50 @@
+  apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocketserver-deployment
+  namespace: default
+  labels:
+    app: websocketserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: websocketserver
+  template:
+    metadata:
+      labels:
+        app: websocketserver
+    spec:
+      containers:
+      - name: websocketserver
+        image: "registry.kub.lab/public/websocketserver:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: cm-volume
+          mountPath: /app/appsettings.json
+          subPath: appsettings.json
+          readOnly: true
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"
+        envFrom:
+        - configMapRef:
+            name: websocketserver-cm
+        - secretRef:
+            name: websocketserver-secret
+      imagePullSecrets:
+      - name: regcred
+      - name: labcert-secret
+      volumes:
+        - name: cm-volume
+          configMap:
+            name: websocketserver-cm
+            items:
+            - key: appsettings.json
+              path: appsettings.json

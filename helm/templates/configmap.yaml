@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: websocketserver-cm
+  namespace: default
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  appsettings.json: |
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      },
+      "AllowedHosts": "*",
+      "RabbitMQ": {
+        "Enabled": true,
+        "ExchangeName": "websocketserver"
+      }
+    }
