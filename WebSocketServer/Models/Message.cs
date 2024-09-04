@@ -8,5 +8,7 @@ namespace WebSocketServer.Models
         public Guid RefId { get; set; }
         [JsonPropertyName("content")]
         public string Content { get; set; }
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using WebSocketServer.Events;
+using WebSocketServer.Models;
 
 namespace WebSocketServer
 {
@@ -105,7 +107,15 @@ namespace WebSocketServer
                     try
                     {
                         var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                        var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        var messageString = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        var message = JsonSerializer.Deserialize<Message>(messageString);
+
+                        if (message!.Type == "heartbeat")
+                        {
+                            if (_loggingEnabled) _logger.LogInformation("Received heartbeat from client {clientId}.", clientId);
+                            await SendAsync(clientId, messageString);
+                            continue;
+                        }
 
                         if (_loggingEnabled) _logger.LogInformation("Received message from client {clientId}.", clientId);
                         Received?.Invoke(this, new(clientId, message));

@@ -1,4 +1,6 @@
-﻿namespace WebSocketServer.Events
+﻿using WebSocketServer.Models;
+
+namespace WebSocketServer.Events
 {
-    public record MessageReceivedEvent(Guid ClientId, string Message);
+    public record MessageReceivedEvent(Guid ClientId, Message Message);
 }

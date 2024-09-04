@@ -46,7 +46,7 @@ webSocketPool.Received += (sender, e) =>
 
     if (isRabbitMqEnabled)
     {
-        var message = JsonSerializer.Deserialize<Message>(e.Message);
+        var message = e.Message;
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
         channel.BasicPublish(exchange: exchangeName,
@@ -60,8 +60,7 @@ webSocketPool.Shutdown += (sender, e) => app.Logger.LogInformation(!e.ClientId.H
 
 app.UseWebSockets(new WebSocketOptions
 {
-    KeepAliveInterval = Timeout.InfiniteTimeSpan,
-    ReceiveBufferSize = 4 * 1024
+    KeepAliveInterval = Timeout.InfiniteTimeSpan
 });
 app.UseMiddleware<WebSocketMiddleware>();
 
