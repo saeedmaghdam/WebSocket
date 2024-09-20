@@ -108,6 +108,9 @@ namespace WebSocketServer
                     {
                         var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                         var messageString = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        if (result.Count == 0)
+                            continue;
+
                         var message = JsonSerializer.Deserialize<Message>(messageString);
 
                         if (message!.Type == "heartbeat")
