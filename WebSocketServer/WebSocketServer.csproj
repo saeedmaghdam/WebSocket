@@ -19,10 +19,7 @@
       osx-x64;
       osx-arm64;
       freebsd-x64;
-      freebsd-arm64;
-      rhel.7-x64;
-      alpine.3.13-x64;
-      alpine.3.13-arm64
+      freebsd-arm64
     </RuntimeIdentifiers>
   </PropertyGroup>
 
